@@ -1,24 +1,27 @@
+import copy
+
 i = open("input.txt")
 program = i.readline().split(',')
 i.close()
 
 program = [int(i) for i in program]
+memory = copy.copy(program)
 
-index = 0
-while index < len(program):
-  instruction = program[index]
+address = 0
+while address < len(memory):
+  opcode = memory[address]
   
-  if instruction == 99:
-    print(program[0])
+  if opcode == 99:
+    print(memory[0])
     break
 
-  val1 = program[program[index+1]]
-  val2 = program[program[index+2]]
+  param1 = memory[memory[address+1]]
+  param2 = memory[memory[address+2]]
 
-  if instruction == 1:
-    program[program[index+3]] = val1 + val2
+  if opcode == 1:
+    memory[memory[address+3]] = param1 + param2
   
-  if instruction == 2:
-    program[program[index+3]] = val1 * val2
+  if opcode == 2:
+    memory[memory[address+3]] = param1 * param2
   
-  index += 4
+  address += 4
