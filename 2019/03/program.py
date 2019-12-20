@@ -1,41 +1,32 @@
 def getWireCords(directions):
-  path = [(0, 0)]
-  currentLoc = (0, 0)
+  x = 0
+  y = 0
+  steps = 0
+  path = {}
+  dx = {'L': -1, 'R': 1, 'U': 0, 'D': 0}
+  dy = {'L': 0, 'R': 0, 'U': 1, 'D': -1}
   for direction in directions:
-    orientation = direction[:1]
+    cmd = direction[:1]
     distance = int(direction[1:])
-
-    newLoc = None
-    if (orientation == 'U'):
-      newLoc = (currentLoc[0], currentLoc[1] + distance)
-    elif (orientation == 'D'):
-      newLoc = (currentLoc[0], currentLoc[1] - distance)
-    elif (orientation == 'L'):
-      newLoc = (currentLoc[0] - distance, currentLoc[1])
-    elif (orientation == 'R'):
-      newLoc = (currentLoc[0] + distance, currentLoc[1])
-
-    if (newLoc != None):
-      path.append(newLoc)
-      currentLoc = newLoc
+    assert cmd in ['L', 'R', 'U', 'D']
+    for _ in range(distance):
+      steps += 1
+      x += dx[cmd]
+      y += dy[cmd]
+      if (x ,y) not in path:
+        path[(x, y)] = steps
   
   return path
 
-def intersection(line1, line2):
-  (x1, y1), (x2, y2) = line1
-  (x3, y3), (x4, y4) = line2
-
-  denominator = (x2 - x2) * (y4 - y3) - (x4 - x3) * (y2 - y1)
-  if (denominator == 0):
-    return None
-
-  intersectX = (x2 * y1 - x1 * y2) * (x4 - x3) - (x4 * y3 - x3 * y4) * (x2 - x1) / denominator
-  intersectY = (x2 * y1 - x1 * y2) * (y4 - y3) - (x4 * y3 - x3 * y4) * (y2 - y1) / denominator
-
-  return (intersectX, intersectY)
-
 with open("input.txt") as i:
-  wire1 = getWireCords(i.readline().split(','))
-  wire2 = getWireCords(i.readline().split(','))
+  a, b, _ = i.read().split('\n')
+  a, b = [x.split(',') for x in [a, b]]
 
-print(intersection(((10, 10), (-10, -10)), ((1, 1), (2, 1))))
+  pathA = getWireCords(a)
+  pathB = getWireCords(b)
+
+  #both = pathA & pathB
+  #print(f'Part 1: {min([x + y for (x, y) in both])}')
+
+  both = pathA.keys() & pathB.keys()
+  print(f'Part 1: {min([pathA[k] + pathB[k] for k in both])}')
